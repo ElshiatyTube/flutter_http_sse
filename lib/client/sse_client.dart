@@ -5,8 +5,8 @@ import '../model/sse_request.dart';
 import '../model/sse_response.dart';
 import 'i_sse_client.dart';
 
-class SSEClient<T> extends ISSEClient {
-  final Map<String, _SSEConnection<T>> _connections = {};
+class SSEClient extends ISSEClient {
+  final Map<String, _SSEConnection> _connections = {};
 
   @override
   void close({String? connectionId}) {
@@ -22,25 +22,25 @@ class SSEClient<T> extends ISSEClient {
   }
 
   @override
-  Stream<SSEResponse<T>> connect(String connectionId, SSERequest request, {Function(dynamic)? fromJson}) {
+  Stream<SSEResponse> connect(String connectionId, SSERequest request, {Function(dynamic)? fromJson}) {
     return subscribeToSSE(connectionId, request, fromJson: fromJson);
   }
 
-  Stream<SSEResponse<T>> subscribeToSSE(String connectionId, SSERequest request, {Function(dynamic)? fromJson}) {
+  Stream<SSEResponse> subscribeToSSE(String connectionId, SSERequest request, {Function(dynamic)? fromJson}) {
     if (_connections.containsKey(connectionId)) {
       return _connections[connectionId]!.stream;
     }
 
-    final connection = _SSEConnection<T>(request, fromJson);
+    final connection = _SSEConnection(request, fromJson);
     _connections[connectionId] = connection;
     return connection.stream;
   }
 }
 
-class _SSEConnection<T> {
+class _SSEConnection {
   final SSERequest request;
   final Function(dynamic p1)? fromJson;
-  final StreamController<SSEResponse<T>> _controller = StreamController.broadcast();
+  final StreamController<SSEResponse> _controller = StreamController.broadcast();
   http.Client? _client;
   int _retryCount = 0;
   static const int _maxRetries = 5;
@@ -78,7 +78,7 @@ class _SSEConnection<T> {
           if (line.isEmpty) {
             // Parse accumulated event when an empty line is encountered
             if (buffer.isNotEmpty) {
-              final sseRes = SSEResponse<T>.parse(buffer.toString());
+              final sseRes = SSEResponse.parse(buffer.toString());
               _controller.add(sseRes);
               request.onData(sseRes);
               buffer.clear();
@@ -128,7 +128,7 @@ class _SSEConnection<T> {
     });
   }
 
-  Stream<SSEResponse<T>> get stream => _controller.stream;
+  Stream<SSEResponse> get stream => _controller.stream;
 
   void close() {
     if (_controller.isClosed) return;

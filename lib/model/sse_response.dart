@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class SSEResponse<T> {
+class SSEResponse {
   final String id;
   final String event;
   final String comment;
@@ -41,11 +41,11 @@ class SSEResponse<T> {
       }
     }
 
-    T? parsedData;
+    dynamic parsedData;
     final jsonData = dataBuffer.toString();
     if (jsonData.isNotEmpty) {
       try {
-        parsedData = json.decode(jsonData) as T;
+        parsedData = json.decode(jsonData);
       } catch (e) {
         return SSEResponse.raw(rawResponse);
       }
@@ -59,7 +59,7 @@ class SSEResponse<T> {
   }
 
   factory SSEResponse.raw(String rawResponse) {
-    return SSEResponse('', '', '', rawResponse as T, rawResponse);
+    return SSEResponse('', '', '', null, rawResponse);
   }
 
   @override
