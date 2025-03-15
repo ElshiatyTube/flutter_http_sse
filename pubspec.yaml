@@ -1,5 +1,5 @@
 name: flutter_http_sse
-description: "A new Flutter Package."
+description: "Flutter HTTP Server-Sent Events (SSE) client library"
 version: 0.0.1
 homepage:
 
