@@ -1,3 +1,5 @@
+import 'package:flutter_http_sse/model/sse_response.dart';
+
 import '../enum/request_content_type_enum.dart';
 import '../enum/request_method_type_enum.dart';
 import 'base_request.dart';
@@ -7,7 +9,7 @@ class SSERequest extends BaseRequest {
   final RequestMethodType _requestType;
   final bool _retry;
 
-  final Function(String) _onData;
+  final Function(SSEResponse) _onData;
   final Function(String)? _onError;
   final Function? _onDone;
 
@@ -18,7 +20,7 @@ class SSERequest extends BaseRequest {
       dynamic body,
       RequestMethodType requestType = RequestMethodType.get,
       bool retry = false,
-      required Function(String) onData,
+      required Function(SSEResponse) onData,
       Function(String)? onError,
       Function? onDone})
       : _body = body,
@@ -30,7 +32,7 @@ class SSERequest extends BaseRequest {
 
   RequestMethodType get requestType => _requestType;
 
-  Function(String) get onData => _onData;
+  Function(SSEResponse) get onData => _onData;
 
   Function(String)? get onError => _onError;
 

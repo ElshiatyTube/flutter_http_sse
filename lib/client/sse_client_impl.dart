@@ -75,12 +75,9 @@ class _SSEConnection<T> {
           if (line.isEmpty) {
             _controller.add(SSEResponse<T>.empty());
           } else {
-            try {
-              _controller.add(SSEResponse<T>.parse(line, fromJson: fromJson));
-            } catch (e) {
-              _controller.addError("Error parsing SSE response: $e");
-            }
-            request.onData(line);
+            var sseRes =  SSEResponse<T>.parse(line, fromJson: fromJson);
+            _controller.add(sseRes);
+            request.onData(sseRes);
           }
         },
         onDone: () {
