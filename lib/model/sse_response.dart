@@ -4,19 +4,17 @@ class SSEResponse<T> {
   final String id;
   final String event;
   final String comment;
-  final T? data;
+  final dynamic data;
   final String rawResponse;
 
   const SSEResponse(this.id, this.event, this.comment, this.data, this.rawResponse);
 
-  /// Parses an SSE event string into an SSEResponse object
-  factory SSEResponse.parse(String rawResponse, {Function(dynamic)? fromJson}) {
+  factory SSEResponse.parse(String rawResponse) {
     String? id;
     String? event;
     String? comment;
     StringBuffer dataBuffer = StringBuffer();
 
-    // Define a regex pattern for extracting fields
     final RegExp regex = RegExp(r'^(id|event|data|:|comment):\s*(.*)$');
 
     for (String line in rawResponse.split('\n')) {
@@ -33,32 +31,27 @@ class SSEResponse<T> {
             event = value;
             break;
           case 'data':
-            if (dataBuffer.isNotEmpty) dataBuffer.write('\n'); // Preserve multi-line JSON
+            if (dataBuffer.isNotEmpty) dataBuffer.write('\n');
             dataBuffer.write(value);
             break;
-          case ':': // Comment field
+          case ':':
             comment = value;
             break;
         }
       }
     }
 
-    id ??= '';
-    event ??= '';
-    comment ??= '';
-
     T? parsedData;
     final jsonData = dataBuffer.toString();
     if (jsonData.isNotEmpty) {
       try {
-        final decodedData = json.decode(jsonData);
-        parsedData = fromJson != null ? fromJson(decodedData) : decodedData as T;
+        parsedData = json.decode(jsonData) as T;
       } catch (e) {
         return SSEResponse.raw(rawResponse);
       }
     }
 
-    return SSEResponse(id, event, comment, parsedData, rawResponse);
+    return SSEResponse(id ?? '', event ?? '', comment ?? '', parsedData, rawResponse);
   }
 
   factory SSEResponse.empty() {
@@ -71,6 +64,6 @@ class SSEResponse<T> {
 
   @override
   String toString() {
-    return 'SSEResponse{id: $id, event: $event, comment: $comment, data: ${data.toString()}, rawResponse: $rawResponse}';
+    return 'SSEResponse{id: $id, event: $event, comment: $comment, data: $data, rawResponse: $rawResponse}';
   }
 }

@@ -78,7 +78,7 @@ class _SSEConnection<T> {
           if (line.isEmpty) {
             // Parse accumulated event when an empty line is encountered
             if (buffer.isNotEmpty) {
-              final sseRes = SSEResponse<T>.parse(buffer.toString(), fromJson: fromJson);
+              final sseRes = SSEResponse<T>.parse(buffer.toString());
               _controller.add(sseRes);
               request.onData(sseRes);
               buffer.clear();
