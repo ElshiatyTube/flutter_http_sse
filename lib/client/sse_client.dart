@@ -69,25 +69,15 @@ class _SSEConnection<T> {
 
       _retryCount = 0;
 
-      final StringBuffer buffer = StringBuffer();
-
-      response.stream.transform(utf8.decoder).listen(
-            (String chunk) {
+      response.stream.transform(utf8.decoder).transform(const LineSplitter()).listen(
+            (String line) {
           if (_controller.isClosed) return;
-
-          buffer.write(chunk); // Append incoming data
-
-          // Ensure we have complete event blocks before parsing
-          List<String> events = buffer.toString().split("\n\n"); // SSE events are separated by double newlines
-
-          if (events.length > 1) {
-            for (int i = 0; i < events.length - 1; i++) {
-              final sseRes = SSEResponse<T>.parse(events[i], fromJson: fromJson);
-              _controller.add(sseRes);
-              request.onData(sseRes);
-            }
-            buffer.clear();
-            buffer.write(events.last); // Keep the incomplete event if any
+          if (line.isEmpty) {
+            _controller.add(SSEResponse<T>.empty());
+          } else {
+            var sseRes =  SSEResponse<T>.parse(line, fromJson: fromJson);
+            _controller.add(sseRes);
+            request.onData(sseRes);
           }
         },
         onDone: () {
