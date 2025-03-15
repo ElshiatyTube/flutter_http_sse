@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class SSEResponse<T> {
-  final dynamic id;
+  final String id;
   final String event;
   final String comment;
   final T? data;
@@ -12,9 +12,9 @@ class SSEResponse<T> {
 
   /// Parses an SSE event string into an SSEResponse object
   factory SSEResponse.parse(String rawResponse, {Function(dynamic)? fromJson}) {
-    dynamic id;
-    String? event;
-    String? comment;
+    String id = "";
+    String event = "";
+    String comment = "";
     StringBuffer jsonDataBuffer = StringBuffer();
 
     // Splitting the SSE response into lines
@@ -34,33 +34,30 @@ class SSEResponse<T> {
     // Convert buffered data into JSON object if available
     T? parsedData;
     final jsonData = jsonDataBuffer.toString();
-    if (jsonData.isNotEmpty) {
-      try {
+
+    try {
+      if (jsonData.isNotEmpty) {
         final decodedData = json.decode(jsonData);
-        parsedData =
-        fromJson != null ? fromJson(decodedData) : decodedData as T;
-      } catch (e) {
-        return SSEResponse.successWithRawResponse(
-            rawData: json.decode(jsonData), rawResponse: rawResponse);
+        parsedData = fromJson != null ? fromJson(decodedData) : decodedData as T;
       }
+    } catch (e) {
+      // Return response with raw data in case of parsing failure
+      return SSEResponse.withRawData(rawData: jsonData, rawResponse: rawResponse);
     }
-    return SSEResponse(
-        id ?? '', event ?? '', comment ?? '', parsedData, rawResponse);
+
+    return SSEResponse(id, event, comment, parsedData, rawResponse);
   }
 
   factory SSEResponse.empty() {
     return SSEResponse('', '', '', null, '');
   }
 
-  factory SSEResponse.successWithRawResponse(
-      {T? rawData, required String rawResponse}) {
-    return SSEResponse('', '', '', rawData, rawResponse);
+  factory SSEResponse.withRawData({required String rawData, required String rawResponse}) {
+    return SSEResponse('', '', '', rawData as T?, rawResponse);
   }
 
-
   @override
-  String toString
-  () {
+  String toString() {
     return 'SSEResponse{id: $id, event: $event, comment: $comment, data: ${data.toString()}, rawResponse: $rawResponse}';
   }
 }
