@@ -13,15 +13,15 @@ class SSERequest extends BaseRequest {
 
   SSERequest(
       {required super.url,
-      required super.sseMediaType,
-      required super.headers,
+      required super.contentType,
+       super.headers,
       required dynamic body,
       required RequestMethodType requestType,
       bool retry = true,
       int retryInterval = 1000,
       required Function(String) onData,
-      required Function(String)? onError,
-      required Function? onDone})
+       Function(String)? onError,
+       Function? onDone})
       : _body = body,
         _requestType = requestType,
         _retry = retry,

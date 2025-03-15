@@ -8,18 +8,18 @@ abstract class BaseRequest {
 
   BaseRequest({
     required String url,
-    required RequestContentType sseMediaType,
-    required Map<String, String>? headers,
+    required RequestContentType contentType,
+    Map<String, String>? headers,
   })  : _url = url,
-        _sseMediaType = sseMediaType,
+        _sseMediaType = contentType,
         _header = headers;
 
   Uri get getRequestUri => Uri.parse(_url);
 
-  RequestContentType get sseMediaType => _sseMediaType;
+  RequestContentType get contentType => _sseMediaType;
 
   Map<String, String>? get headers => {
-        'Content-Type': sseMediaType.value,
+        'Content-Type': contentType.value,
         if (_header != null) ..._header!,
       };
 }
