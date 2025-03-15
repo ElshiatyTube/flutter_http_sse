@@ -1,6 +1,8 @@
 # Flutter HTTP SSE Client
 
 A Flutter package for handling Server-Sent Events (SSE) connections over the `http` package. This package allows you to establish SSE connections, receive real-time updates from the server, and handle automatic reconnections.
+![SSE lifecycle](https://ik.imagekit.io/ably/ghost/prod/2022/11/server_sent_events_how_it_works.png)
+![SSE vs Request/Response](https://bunnyacademy.b-cdn.net/What-is-SSE-Server-Sent-Events-and-how-do-they-work.svg)
 
 ## Features
 - Establish SSE connections with custom request parameters.
