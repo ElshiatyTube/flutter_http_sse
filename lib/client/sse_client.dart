@@ -22,11 +22,13 @@ class SSEClient extends ISSEClient {
   }
 
   @override
-  Stream<SSEResponse> connect(String connectionId, SSERequest request, {Function(dynamic)? fromJson}) {
+  Stream<SSEResponse> connect(String connectionId, SSERequest request,
+      {Function(dynamic)? fromJson}) {
     return subscribeToSSE(connectionId, request, fromJson: fromJson);
   }
 
-  Stream<SSEResponse> subscribeToSSE(String connectionId, SSERequest request, {Function(dynamic)? fromJson}) {
+  Stream<SSEResponse> subscribeToSSE(String connectionId, SSERequest request,
+      {Function(dynamic)? fromJson}) {
     if (_connections.containsKey(connectionId)) {
       return _connections[connectionId]!.stream;
     }
@@ -40,7 +42,8 @@ class SSEClient extends ISSEClient {
 class _SSEConnection {
   final SSERequest request;
   final Function(dynamic p1)? fromJson;
-  final StreamController<SSEResponse> _controller = StreamController.broadcast();
+  final StreamController<SSEResponse> _controller =
+      StreamController.broadcast();
   http.Client? _client;
   int _retryCount = 0;
   static const int _maxRetries = 5;
@@ -52,7 +55,8 @@ class _SSEConnection {
 
   void _connect() {
     _client = http.Client();
-    var httpRequest = http.Request(request.requestType.value, request.getRequestUri);
+    var httpRequest =
+        http.Request(request.requestType.value, request.getRequestUri);
 
     if (request.headers != null) {
       httpRequest.headers.addAll(request.headers!);
@@ -63,7 +67,8 @@ class _SSEConnection {
 
     _client!.send(httpRequest).then((response) {
       if (response.statusCode >= 500) {
-        _handleError("Failed to connect to server. Status code: ${response.statusCode}");
+        _handleError(
+            "Failed to connect to server. Status code: ${response.statusCode}");
         return;
       }
 
@@ -71,8 +76,11 @@ class _SSEConnection {
 
       final StringBuffer buffer = StringBuffer();
 
-      response.stream.transform(utf8.decoder).transform(const LineSplitter()).listen(
-            (String line) {
+      response.stream
+          .transform(utf8.decoder)
+          .transform(const LineSplitter())
+          .listen(
+        (String line) {
           if (_controller.isClosed) return;
 
           if (line.isEmpty) {
@@ -99,6 +107,7 @@ class _SSEConnection {
       _handleError(error);
     });
   }
+
   void _handleError(dynamic error) {
     print("Error connecting to server via SSE: $error");
     if (_controller.isClosed) return;

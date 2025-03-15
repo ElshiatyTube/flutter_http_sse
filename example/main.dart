@@ -37,7 +37,7 @@ class _SSEPageState extends State<SSEPage> {
 
   void _connectToSSE() {
     final request = SSERequest(
-      url:'https://your-sse-server.com/events',
+      url: 'https://your-sse-server.com/events',
       onData: (response) {
         print("New SSE Event: ${response.data}");
       },
@@ -53,7 +53,7 @@ class _SSEPageState extends State<SSEPage> {
     _stream = _sseClient.connect('sse_connection', request);
 
     _stream.listen(
-          (event) {
+      (event) {
         setState(() {
           _messages.add(event.data.toString());
         });

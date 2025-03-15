@@ -7,7 +7,8 @@ class SSEResponse {
   final dynamic data;
   final String rawResponse;
 
-  const SSEResponse(this.id, this.event, this.comment, this.data, this.rawResponse);
+  const SSEResponse(
+      this.id, this.event, this.comment, this.data, this.rawResponse);
 
   factory SSEResponse.parse(String rawResponse) {
     String? id;
@@ -51,7 +52,8 @@ class SSEResponse {
       }
     }
 
-    return SSEResponse(id ?? '', event ?? '', comment ?? '', parsedData, rawResponse);
+    return SSEResponse(
+        id ?? '', event ?? '', comment ?? '', parsedData, rawResponse);
   }
 
   factory SSEResponse.empty() {

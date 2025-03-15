@@ -1,4 +1,4 @@
-enum RequestContentType{
+enum RequestContentType {
   json("application/json"),
   textEventStreamValue("text/event-stream"),
   plainText("text/plain"),
