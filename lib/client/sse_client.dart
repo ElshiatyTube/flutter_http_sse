@@ -71,20 +71,23 @@ class _SSEConnection<T> {
 
       final StringBuffer buffer = StringBuffer();
 
-      response.stream.transform(utf8.decoder).transform(const LineSplitter()).listen(
-            (String line) {
+      response.stream.transform(utf8.decoder).listen(
+            (String chunk) {
           if (_controller.isClosed) return;
 
-          if (line.isEmpty) {
-            // Parse accumulated event when an empty line is encountered
-            if (buffer.isNotEmpty) {
-              final sseRes = SSEResponse<T>.parse(buffer.toString(), fromJson: fromJson);
+          buffer.write(chunk); // Append incoming data
+
+          // Ensure we have complete event blocks before parsing
+          List<String> events = buffer.toString().split("\n\n"); // SSE events are separated by double newlines
+
+          if (events.length > 1) {
+            for (int i = 0; i < events.length - 1; i++) {
+              final sseRes = SSEResponse<T>.parse(events[i], fromJson: fromJson);
               _controller.add(sseRes);
               request.onData(sseRes);
-              buffer.clear();
             }
-          } else {
-            buffer.writeln(line);
+            buffer.clear();
+            buffer.write(events.last); // Keep the incomplete event if any
           }
         },
         onDone: () {
