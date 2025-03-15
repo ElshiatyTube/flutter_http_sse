@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
-
 import '../model/sse_request.dart';
 import '../model/sse_response.dart';
 import 'i_sse_client.dart';
@@ -24,7 +22,7 @@ class SSEClient<T> extends ISSEClient {
   }
 
   @override
-  Stream<SSEResponse<T>> connect(String connectionId,SSERequest request, {Function(dynamic)? fromJson}) {
+  Stream<SSEResponse<T>> connect(String connectionId, SSERequest request, {Function(dynamic)? fromJson}) {
     return subscribeToSSE(connectionId, request, fromJson: fromJson);
   }
 
@@ -44,22 +42,33 @@ class _SSEConnection<T> {
   final Function(dynamic p1)? fromJson;
   final StreamController<SSEResponse<T>> _controller = StreamController.broadcast();
   http.Client? _client;
+  int _retryCount = 0;
+  static const int _maxRetries = 5;
+  static const Duration _initialDelay = Duration(seconds: 2);
 
   _SSEConnection(this.request, this.fromJson) {
+    _connect();
+  }
+
+  void _connect() {
     _client = http.Client();
     var httpRequest = http.Request(request.requestType.value, request.getRequestUri);
-    if(request.headers != null){
+
+    if (request.headers != null) {
       httpRequest.headers.addAll(request.headers!);
     }
-    if(request.body != null){
+    if (request.body != null) {
       httpRequest.body = json.encode(request.body);
     }
+
     _client!.send(httpRequest).then((response) {
       if (response.statusCode >= 400) {
-        _controller.addError("Failed to connect to server. Status code: ${response.statusCode}");
-        close();
+        _handleError("Failed to connect to server. Status code: ${response.statusCode}");
         return;
       }
+
+      _retryCount = 0;
+
       response.stream.transform(utf8.decoder).transform(const LineSplitter()).listen(
             (String line) {
           if (_controller.isClosed) return;
@@ -71,13 +80,45 @@ class _SSEConnection<T> {
           }
           request.onData(line);
         },
-        onDone: close,
+        onDone: () {
+          request.onDone?.call();
+        },
         onError: (error) {
-          _controller.addError(error);
-          close();
+          _handleError(error);
         },
         cancelOnError: true,
       );
+    }).catchError((error) {
+      _handleError(error);
+    });
+  }
+
+  void _handleError(dynamic error) {
+    print("Error connecting to server via SSE: $error");
+    if (_controller.isClosed) return;
+    _controller.addError(error);
+    request.onError?.call(error.toString());
+
+    if (request.retry) {
+      _handleRetry();
+    } else {
+      close();
+    }
+  }
+
+  void _handleRetry() {
+    if (_retryCount >= _maxRetries) {
+      close();
+      return;
+    }
+
+    _retryCount++;
+    Duration retryDelay = _initialDelay * _retryCount; // Exponential backoff
+
+    Future.delayed(retryDelay, () {
+      if (!_controller.isClosed) {
+        _connect();
+      }
     });
   }
 

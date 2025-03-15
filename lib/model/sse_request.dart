@@ -6,7 +6,6 @@ class SSERequest extends BaseRequest {
   final dynamic _body;
   final RequestMethodType _requestType;
   final bool _retry;
-  final int _retryInterval;
 
   final Function(String) _onData;
   final Function(String)? _onError;
@@ -19,14 +18,12 @@ class SSERequest extends BaseRequest {
       dynamic body,
       RequestMethodType requestType = RequestMethodType.get,
       bool retry = true,
-      int retryInterval = 1000,
       required Function(String) onData,
       Function(String)? onError,
       Function? onDone})
       : _body = body,
         _requestType = requestType,
         _retry = retry,
-        _retryInterval = retryInterval,
         _onData = onData,
         _onError = onError,
         _onDone = onDone;
@@ -42,6 +39,4 @@ class SSERequest extends BaseRequest {
   dynamic get body => _body;
 
   bool get retry => _retry;
-
-  int get retryInterval => _retryInterval;
 }
