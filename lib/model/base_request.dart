@@ -10,9 +10,6 @@ abstract class BaseRequest {
     required String url,
     required RequestContentType sseMediaType,
     required Map<String, String>? headers,
-    required Function(String) onMessage,
-    Function(String)? onError,
-    Function? onDone,
   })  : _url = url,
         _sseMediaType = sseMediaType,
         _header = headers;

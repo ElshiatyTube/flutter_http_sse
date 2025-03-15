@@ -1,37 +1,46 @@
-
-import '../enum/request_content_type_enum.dart';
 import '../enum/request_method_type_enum.dart';
 import 'base_request.dart';
 
 class SSERequest extends BaseRequest {
-  final dynamic body;
-  final RequestMethodType requestType;
-  final bool retry;
-  final int retryInterval;
+  final dynamic _body;
+  final RequestMethodType _requestType;
+  final bool _retry;
+  final int _retryInterval;
 
   final Function(String) _onData;
   final Function(String)? _onError;
   final Function? _onDone;
 
   SSERequest(
-      {this.body,
-        this.retry = false,
-        this.retryInterval = 1000,
-        required this.requestType,
-        required super.url,
-        super.headers, super.sseMediaType = RequestContentType.textEventStreamValue,
-        required super.onMessage,
-        super.onDone,
-        super.onError})
-      : _onData = onMessage,
+      {required super.url,
+      required super.sseMediaType,
+      required super.headers,
+      required dynamic body,
+      required RequestMethodType requestType,
+      bool retry = true,
+      int retryInterval = 1000,
+      required Function(String) onData,
+      required Function(String)? onError,
+      required Function? onDone})
+      : _body = body,
+        _requestType = requestType,
+        _retry = retry,
+        _retryInterval = retryInterval,
+        _onData = onData,
         _onError = onError,
         _onDone = onDone;
 
-  RequestMethodType get requestMethodType => requestType;
+  RequestMethodType get requestType => _requestType;
 
   Function(String) get onData => _onData;
 
   Function(String)? get onError => _onError;
 
   Function? get onDone => _onDone;
+
+  dynamic get body => _body;
+
+  bool get retry => _retry;
+
+  int get retryInterval => _retryInterval;
 }
