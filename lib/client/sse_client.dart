@@ -69,15 +69,22 @@ class _SSEConnection<T> {
 
       _retryCount = 0;
 
+      final StringBuffer buffer = StringBuffer();
+
       response.stream.transform(utf8.decoder).transform(const LineSplitter()).listen(
             (String line) {
           if (_controller.isClosed) return;
+
           if (line.isEmpty) {
-            _controller.add(SSEResponse<T>.empty());
+            // Parse accumulated event when an empty line is encountered
+            if (buffer.isNotEmpty) {
+              final sseRes = SSEResponse<T>.parse(buffer.toString(), fromJson: fromJson);
+              _controller.add(sseRes);
+              request.onData(sseRes);
+              buffer.clear();
+            }
           } else {
-            var sseRes =  SSEResponse<T>.parse(line, fromJson: fromJson);
-            _controller.add(sseRes);
-            request.onData(sseRes);
+            buffer.writeln(line);
           }
         },
         onDone: () {
