@@ -7,6 +7,7 @@ A Flutter package for handling Server-Sent Events (SSE) connections over the `ht
 - Automatically parses SSE responses.
 - Supports retrying on connection failures.
 - Handles stream disconnections gracefully.
+- Allow multiple connections.
 - Allows dynamic deserialization of received data.
 
 ## Installation
