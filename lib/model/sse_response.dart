@@ -1,19 +1,18 @@
 import 'dart:convert';
 
 class SSEResponse<T> {
-  final String _id, _event, _comment;
-  final T? _data;
+  final String id;
+  final String event;
+  final String comment;
+  final T? data;
 
-  const SSEResponse(this._id, this._event, this._comment, this._data);
+  const SSEResponse(this.id, this.event, this.comment, this.data);
 
-  String get id => _id;
-  String get event => _event;
-  String get comment => _comment;
-  T? get data => _data;
-
+  /// Parses an SSE event string into an SSEResponse object
   factory SSEResponse.parse(String rawEvent, {Function(dynamic)? fromJson}) {
     String? id;
     String? event;
+    String? comment;
     StringBuffer jsonDataBuffer = StringBuffer();
 
     // Splitting the SSE response into lines
@@ -25,22 +24,24 @@ class SSEResponse<T> {
       } else if (line.startsWith('data: ')) {
         if (jsonDataBuffer.isNotEmpty) jsonDataBuffer.write('\n');
         jsonDataBuffer.write(line.substring(6).trim());
+      } else if (line.startsWith(':')) {
+        comment = line.substring(1).trim();
       }
     }
 
-    // Convert buffered data into JSON object
+    // Convert buffered data into JSON object if available
+    T? parsedData;
     final jsonData = jsonDataBuffer.toString();
-    T parsedData;
     if (jsonData.isNotEmpty) {
-      if (fromJson != null) {
-        parsedData = fromJson(json.decode(jsonData));
-      } else {
-        parsedData = json.decode(jsonData);
+      try {
+        final decodedData = json.decode(jsonData);
+        parsedData = fromJson != null ? fromJson(decodedData) : decodedData as T;
+      } catch (e) {
+        throw Exception("Failed to parse SSE data: $jsonData, Error: $e");
       }
-    } else {
-      throw Exception("No data found");
     }
-    return SSEResponse(id ?? '', event ?? '', '', parsedData);
+
+    return SSEResponse(id ?? '', event ?? '', comment ?? '', parsedData);
   }
 
   factory SSEResponse.empty() {
