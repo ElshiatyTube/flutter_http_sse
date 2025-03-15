@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_http_sse/client/sse_client.dart';
 import 'package:flutter_http_sse/model/sse_request.dart';
@@ -8,6 +10,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,11 +23,13 @@ class MyApp extends StatelessWidget {
 }
 
 class SSEPage extends StatefulWidget {
+  const SSEPage({super.key});
+
   @override
-  _SSEPageState createState() => _SSEPageState();
+  SSEPageState createState() => SSEPageState();
 }
 
-class _SSEPageState extends State<SSEPage> {
+class SSEPageState extends State<SSEPage> {
   late SSEClient _sseClient;
   late Stream<SSEResponse> _stream;
   final List<String> _messages = [];
@@ -39,30 +45,30 @@ class _SSEPageState extends State<SSEPage> {
     final request = SSERequest(
       url: 'https://your-sse-server.com/events',
       onData: (response) {
-        print("New SSE Event: ${response.data}");
+        log("New SSE Event: ${response.data}");
       },
       onError: (error) {
-        print("SSE Error: $error");
+        log("SSE Error: $error");
       },
       onDone: () {
-        print("SSE Connection Closed");
+        log("SSE Connection Closed");
       },
       retry: true,
     );
 
-    _stream = _sseClient.connect('sse_connection', request);
+    _stream = _sseClient.connect('sse_connection1', request);
 
     _stream.listen(
-      (event) {
+          (event) {
         setState(() {
           _messages.add(event.data.toString());
         });
       },
       onError: (error) {
-        print("Stream Error: $error");
+        log("Stream Error: $error");
       },
       onDone: () {
-        print("Stream Closed");
+        log("Stream Closed");
       },
     );
   }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:http/http.dart' as http;
 import '../model/sse_request.dart';
 import '../model/sse_response.dart';
@@ -109,7 +110,7 @@ class _SSEConnection {
   }
 
   void _handleError(dynamic error) {
-    print("Error connecting to server via SSE: $error");
+    log("Error connecting to server via SSE: $error");
     if (_controller.isClosed) return;
     _controller.addError(error);
     request.onError?.call(error.toString());
