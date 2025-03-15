@@ -1,69 +1,80 @@
-# SSE Client for Flutter
+# Flutter HTTP SSE Client
 
-A simple and efficient **Server-Sent Events (SSE) Client** for Flutter applications using `http` package.
+A Flutter package for handling Server-Sent Events (SSE) connections over the `http` package. This package allows you to establish SSE connections, receive real-time updates from the server, and handle automatic reconnections.
 
 ## Features
-- Establish and manage SSE connections.
-- Automatic reconnection with exponential backoff.
-- Parses SSE events into structured responses.
-- Supports multiple connections.
-- Customizable request headers and body.
+- Establish SSE connections with custom request parameters.
+- Automatically parses SSE responses.
+- Supports retrying on connection failures.
+- Handles stream disconnections gracefully.
+- Allows dynamic deserialization of received data.
 
 ## Installation
+
 Add this package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
   flutter_http_sse:
-    path: your_local_package_path # Update with actual path or publish it to pub.dev
+    path: https://github.com/ElshiatyTube/flutter_http_sse.git
 ```
 
 ## Usage
-### Create an SSE Connection
+
+### 1. Create an SSE Request
 ```dart
-final sseClient = SSEClient<YourDataModel>();
+import 'package:flutter_http_sse/model/sse_request.dart';
 
 final request = SSERequest(
-  url: 'https://your-sse-endpoint.com/stream',
-  requestType: RequestMethodType.get,
-  retry: true,
-  onData: (SSEResponse response) {
-    print('New Event: ${response.data}');
-  },
-  onError: (error) {
-    print('Error: $error');
-  },
-  onDone: () {
-    print('SSE Connection Closed');
-  },
+  requestType: SSERequestType.GET,
+  url: Uri.parse("https://your-sse-endpoint.com/stream"),
+  headers: {"Authorization": "Bearer YOUR_TOKEN"},
+  onData: (data) => print("Received: $data"),
+  onError: (error) => print("Error: $error"),
+  onDone: () => print("Stream closed"),
+  retry: true, // Enables automatic reconnection
 );
-
-sseClient.connect('my_connection', request);
 ```
 
-### Close a Connection
+### 2. Connect to SSE Server
 ```dart
-sseClient.close(connectionId: 'my_connection');
+import 'package:flutter_http_sse/service/sse_client.dart';
+
+final sseClient = SSEClient();
+final Stream<SSEResponse> stream = sseClient.connect("connectionId", request);
+
+stream.listen(
+  (SSEResponse response) {
+    print("Received event: ${response.event}, data: ${response.data}");
+  },
+  onError: (error) => print("SSE Error: $error"),
+  onDone: () => print("SSE Connection Closed"),
+);
 ```
 
-### Close All Connections
+### 3. Close SSE Connection
 ```dart
-sseClient.close();
+sseClient.close(connectionId: "connectionId");
 ```
 
-## Models
-### `SSEResponse<T>`
-Represents a structured SSE response.
+## SSEResponse Structure
 ```dart
-class SSEResponse<T> {
+class SSEResponse {
   final String id;
   final String event;
   final String comment;
-  final T data;
+  final dynamic data;
   final String rawResponse;
 }
 ```
 
+## Error Handling & Retries
+- If the server responds with a `5xx` status code, the client will attempt to reconnect automatically.
+- Retry attempts follow an exponential backoff strategy with a maximum of 5 retries.
+- If retries are disabled, the connection will be closed on failure.
+
+## Contributions
+Contributions are welcome! Feel free to submit issues and pull requests.
+
 ## License
 This project is licensed under the MIT License.
-
