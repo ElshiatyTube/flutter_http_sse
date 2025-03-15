@@ -62,7 +62,7 @@ class _SSEConnection<T> {
     }
 
     _client!.send(httpRequest).then((response) {
-      if (response.statusCode >= 400) {
+      if (response.statusCode >= 500) {
         _handleError("Failed to connect to server. Status code: ${response.statusCode}");
         return;
       }
@@ -75,8 +75,7 @@ class _SSEConnection<T> {
           if (line.isEmpty) {
             _controller.add(SSEResponse<T>.empty());
           } else {
-            final data = json.decode(line);
-            _controller.add(SSEResponse<T>.parse(data, fromJson: fromJson));
+            _controller.add(SSEResponse<T>.parse(line, fromJson: fromJson));
           }
           request.onData(line);
         },
