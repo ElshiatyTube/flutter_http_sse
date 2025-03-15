@@ -1,4 +1,3 @@
-
 import '../enum/request_content_type_enum.dart';
 
 abstract class BaseRequest {

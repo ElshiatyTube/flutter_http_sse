@@ -1,8 +1,6 @@
 enum RequestMethodType {
   get('GET'),
-  post('POST'),
-  put('PUT'),
-  delete('DELETE');
+  post('POST');
 
   final String value;
 
