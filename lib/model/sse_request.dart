@@ -1,6 +1,6 @@
-import 'package:fluttersse/enum/request_content_type_enum.dart';
-import 'package:fluttersse/enum/request_method_type_enum.dart';
 
+import '../enum/request_content_type_enum.dart';
+import '../enum/request_method_type_enum.dart';
 import 'base_request.dart';
 
 

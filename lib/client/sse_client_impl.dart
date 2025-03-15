@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fluttersse/client/i_sse_client.dart';
-import 'package:fluttersse/model/sse_response.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/sse_request.dart';
+import '../model/sse_response.dart';
+import 'i_sse_client.dart';
 
 class SSEClientImpl<T> extends ISSEClient {
   final Map<String, _SSEConnection<T>> _connections = {};
