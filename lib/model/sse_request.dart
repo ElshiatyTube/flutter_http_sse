@@ -17,7 +17,7 @@ class SSERequest extends BaseRequest {
       super.headers,
       dynamic body,
       RequestMethodType requestType = RequestMethodType.get,
-      bool retry = true,
+      bool retry = false,
       required Function(String) onData,
       Function(String)? onError,
       Function? onDone})
