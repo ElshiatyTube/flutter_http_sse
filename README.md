@@ -1,39 +1,69 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# SSE Client for Flutter
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+A simple and efficient **Server-Sent Events (SSE) Client** for Flutter applications using `http` package.
 
 ## Features
+- Establish and manage SSE connections.
+- Automatic reconnection with exponential backoff.
+- Parses SSE events into structured responses.
+- Supports multiple connections.
+- Customizable request headers and body.
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+## Installation
+Add this package to your `pubspec.yaml`:
 
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
-
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  flutter_http_sse:
+    path: your_local_package_path # Update with actual path or publish it to pub.dev
 ```
 
-## Additional information
+## Usage
+### Create an SSE Connection
+```dart
+final sseClient = SSEClient<YourDataModel>();
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+final request = SSERequest(
+  url: 'https://your-sse-endpoint.com/stream',
+  requestType: RequestMethodType.get,
+  retry: true,
+  onData: (SSEResponse response) {
+    print('New Event: ${response.data}');
+  },
+  onError: (error) {
+    print('Error: $error');
+  },
+  onDone: () {
+    print('SSE Connection Closed');
+  },
+);
+
+sseClient.connect('my_connection', request);
+```
+
+### Close a Connection
+```dart
+sseClient.close(connectionId: 'my_connection');
+```
+
+### Close All Connections
+```dart
+sseClient.close();
+```
+
+## Models
+### `SSEResponse<T>`
+Represents a structured SSE response.
+```dart
+class SSEResponse<T> {
+  final String id;
+  final String event;
+  final String comment;
+  final T data;
+  final String rawResponse;
+}
+```
+
+## License
+This project is licensed under the MIT License.
+
