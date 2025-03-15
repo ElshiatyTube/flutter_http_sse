@@ -12,9 +12,9 @@ class SSEResponse<T> {
 
   /// Parses an SSE event string into an SSEResponse object
   factory SSEResponse.parse(String rawResponse, {Function(dynamic)? fromJson}) {
-    String id = "";
-    String event = "";
-    String comment = "";
+    String? id;
+    String? event;
+    String? comment;
     StringBuffer jsonDataBuffer = StringBuffer();
 
     // Splitting the SSE response into lines
@@ -31,18 +31,21 @@ class SSEResponse<T> {
       }
     }
 
+    // Ensure non-nullable fields have default values
+    id ??= '';
+    event ??= '';
+    comment ??= '';
+
     // Convert buffered data into JSON object if available
     T? parsedData;
     final jsonData = jsonDataBuffer.toString();
-
-    try {
-      if (jsonData.isNotEmpty) {
+    if (jsonData.isNotEmpty) {
+      try {
         final decodedData = json.decode(jsonData);
         parsedData = fromJson != null ? fromJson(decodedData) : decodedData as T;
+      } catch (e) {
+        return SSEResponse.raw(rawResponse);
       }
-    } catch (e) {
-      // Return response with raw data in case of parsing failure
-      return SSEResponse.withRawData(rawData: jsonData, rawResponse: rawResponse);
     }
 
     return SSEResponse(id, event, comment, parsedData, rawResponse);
@@ -52,8 +55,8 @@ class SSEResponse<T> {
     return SSEResponse('', '', '', null, '');
   }
 
-  factory SSEResponse.withRawData({required String rawData, required String rawResponse}) {
-    return SSEResponse('', '', '', rawData as T?, rawResponse);
+  factory SSEResponse.raw(String rawResponse) {
+    return SSEResponse('', '', '', rawResponse as T, rawResponse);
   }
 
   @override
