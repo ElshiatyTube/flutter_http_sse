@@ -1,7 +1,8 @@
 name: flutter_http_sse
-description: "Flutter HTTP Server-Sent Events (SSE) client library"
-version: 0.0.1
-homepage:
+description: "Flutter HTTP Server-Sent Events (SSE) client library for receive real-time updates from the server"
+version: 1.0.0
+homepage: https://github.com/ElshiatyTube/flutter_http_sse
+repository: https://github.com/ElshiatyTube/flutter_http_sse
 
 environment:
   sdk: '>=2.17.0 <4.0.0'
