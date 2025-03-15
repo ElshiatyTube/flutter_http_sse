@@ -3,7 +3,6 @@ import '../enum/request_content_type_enum.dart';
 import '../enum/request_method_type_enum.dart';
 import 'base_request.dart';
 
-
 class SSERequest extends BaseRequest {
   final dynamic body;
   final RequestMethodType requestType;

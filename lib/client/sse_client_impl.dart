@@ -7,7 +7,7 @@ import '../model/sse_request.dart';
 import '../model/sse_response.dart';
 import 'i_sse_client.dart';
 
-class SSEClientImpl<T> extends ISSEClient {
+class SSEClient<T> extends ISSEClient {
   final Map<String, _SSEConnection<T>> _connections = {};
 
   @override
