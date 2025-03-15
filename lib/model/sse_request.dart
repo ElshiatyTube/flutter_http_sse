@@ -1,3 +1,4 @@
+import '../enum/request_content_type_enum.dart';
 import '../enum/request_method_type_enum.dart';
 import 'base_request.dart';
 
@@ -13,15 +14,15 @@ class SSERequest extends BaseRequest {
 
   SSERequest(
       {required super.url,
-      required super.contentType,
-       super.headers,
-      required dynamic body,
-      required RequestMethodType requestType,
+      super.contentType = RequestContentType.textEventStreamValue,
+      super.headers,
+      dynamic body,
+      RequestMethodType requestType = RequestMethodType.get,
       bool retry = true,
       int retryInterval = 1000,
       required Function(String) onData,
-       Function(String)? onError,
-       Function? onDone})
+      Function(String)? onError,
+      Function? onDone})
       : _body = body,
         _requestType = requestType,
         _retry = retry,
