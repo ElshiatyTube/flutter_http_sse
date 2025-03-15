@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class SSEResponse<T> {
-  final String id;
+  final dynamic id;
   final String event;
   final String comment;
   final T? data;
@@ -12,7 +12,7 @@ class SSEResponse<T> {
 
   /// Parses an SSE event string into an SSEResponse object
   factory SSEResponse.parse(String rawResponse, {Function(dynamic)? fromJson}) {
-    String? id;
+    dynamic id;
     String? event;
     String? comment;
     StringBuffer jsonDataBuffer = StringBuffer();
@@ -55,5 +55,12 @@ class SSEResponse<T> {
   factory SSEResponse.successWithRawResponse(
       {T? rawData, required String rawResponse}) {
     return SSEResponse('', '', '', rawData, rawResponse);
+  }
+
+
+  @override
+  String toString
+  () {
+    return 'SSEResponse{id: $id, event: $event, comment: $comment, data: ${data.toString()}, rawResponse: $rawResponse}';
   }
 }
