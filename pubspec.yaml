@@ -6,11 +6,8 @@ repository: https://github.com/ElshiatyTube/dart_http_sse
 
 environment:
   sdk: '>=2.17.0 <4.0.0'
-  flutter: ">=1.17.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
   http: ^1.4.0
 
 dev_dependencies:
