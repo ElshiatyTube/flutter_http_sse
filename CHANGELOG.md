@@ -15,3 +15,7 @@
 - Fixed private type issue in `example/main.dart`.
 - Updated `LICENSE` file to remove TODO comments.
 
+## 1.0.2 - 2025-05-07
+### Updated
+- Updated dependencies to the latest versions.
+- Removed unnecessary `flutter` dependency from `pubspec.yaml`.
