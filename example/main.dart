@@ -1,8 +1,8 @@
 import 'dart:developer';
 
-import 'package:dart_http_sse/client/sse_client.dart';
-import 'package:dart_http_sse/model/sse_request.dart';
-import 'package:dart_http_sse/model/sse_response.dart';
+import 'package:flutter_http_sse/client/sse_client.dart';
+import 'package:flutter_http_sse/model/sse_request.dart';
+import 'package:flutter_http_sse/model/sse_response.dart';
 import 'package:flutter/material.dart';
 
 

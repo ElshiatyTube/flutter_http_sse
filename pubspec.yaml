@@ -1,4 +1,4 @@
-name: dart_http_sse
+name: flutter_http_sse
 description: "Flutter HTTP Server-Sent Events (SSE) client library for receive real-time updates from the server"
 version: 1.0.3
 homepage: https://github.com/ElshiatyTube/flutter_http_sse
