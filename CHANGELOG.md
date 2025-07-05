@@ -19,3 +19,7 @@
 ### Updated
 - Updated dependencies to the latest versions.
 - Removed unnecessary `flutter` dependency from `pubspec.yaml`.
+
+## 1.0.2 - 2025-05-07
+### Updated
+- Update repo URL in `pubspec.yaml` to point to the correct repository.
