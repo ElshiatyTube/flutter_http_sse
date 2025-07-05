@@ -19,4 +19,3 @@
 ### Updated
 - Updated dependencies to the latest versions.
 - Removed unnecessary `flutter` dependency from `pubspec.yaml`.
-- Rename the package to `dart_http_sse` for clarity.
