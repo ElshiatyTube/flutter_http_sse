@@ -18,15 +18,15 @@ Add this package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  flutter_http_sse:
-    path: https://github.com/ElshiatyTube/flutter_http_sse.git
+  dart_http_sse:
+    path: https://github.com/ElshiatyTube/dart_http_sse.git
 ```
 
 ## Usage
 
 ### 1. Create an SSE Request
 ```dart
-import 'package:flutter_http_sse/model/sse_request.dart';
+import 'package:dart_http_sse/model/sse_request.dart';
 
 final request = SSERequest(
   requestType: SSERequestType.GET,
@@ -41,7 +41,7 @@ final request = SSERequest(
 
 ### 2. Connect to SSE Server
 ```dart
-import 'package:flutter_http_sse/service/sse_client.dart';
+import 'package:dart_http_sse/service/sse_client.dart';
 
 final sseClient = SSEClient();
 final Stream<SSEResponse> stream = sseClient.connect("connectionId", request);
@@ -80,4 +80,9 @@ class SSEResponse {
 Contributions are welcome! Feel free to submit issues and pull requests.
 
 ## License
-This project is licensed under the MIT License.
+
+This project is licensed under the MIT License. Feel free to modify and use it in your applications.
+
+---
+
+**Author:** Youssef Elshiaty

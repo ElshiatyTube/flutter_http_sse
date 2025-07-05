@@ -1,9 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_http_sse/client/sse_client.dart';
-import 'package:flutter_http_sse/model/sse_request.dart';
-import 'package:flutter_http_sse/model/sse_response.dart';
+import 'package:dart_http_sse/client/sse_client.dart';
+import 'package:dart_http_sse/model/sse_request.dart';
+import 'package:dart_http_sse/model/sse_response.dart';
 
 void main() {
   runApp(MyApp());
@@ -59,7 +59,7 @@ class SSEPageState extends State<SSEPage> {
     _stream = _sseClient.connect('sse_connection1', request);
 
     _stream.listen(
-          (event) {
+      (event) {
         setState(() {
           _messages.add(event.data.toString());
         });
