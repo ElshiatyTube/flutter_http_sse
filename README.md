@@ -29,8 +29,8 @@ dependencies:
 import 'package:flutter_http_sse/model/sse_request.dart';
 
 final request = SSERequest(
-  requestType: SSERequestType.GET,
-  url: Uri.parse("https://your-sse-endpoint.com/stream"),
+  requestType: RequestMethodType.GET,
+  url: "https://your-sse-endpoint.com/stream",
   headers: {"Authorization": "Bearer YOUR_TOKEN"},
   onData: (data) => print("Received: $data"),
   onError: (error) => print("Error: $error"),
@@ -68,6 +68,27 @@ class SSEResponse {
   final String comment;
   final dynamic data;
   final String rawResponse;
+}
+```
+
+## Enums:
+```dart
+enum RequestMethodType {
+  get('GET'),
+  post('POST');
+
+  final String value;
+
+  const RequestMethodType(this.value);
+}
+enum RequestContentType {
+  json("application/json"),
+  textEventStreamValue("text/event-stream"),
+  plainText("text/plain"),
+  multiPartFormData("multipart/form-data");
+
+  const RequestContentType(this.value);
+  final String value;
 }
 ```
 

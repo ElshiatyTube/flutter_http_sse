@@ -23,3 +23,7 @@
 ## 1.0.3 - 2025-05-07
 ### Updated
 - Update repo URL in `pubspec.yaml` to point to the correct repository.
+
+## 1.0.4 - 2025-07-17
+### Updated
+- Updated `README.md` to include more accurate detailed usage examples.
