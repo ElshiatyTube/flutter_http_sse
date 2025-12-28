@@ -27,3 +27,6 @@
 ## 1.0.4 - 2025-07-17
 ### Updated
 - Updated `README.md` to include more accurate detailed usage examples.
+
+## 1.0.5 - 2025-12-28
+- Updated dependencies to the latest versions.
